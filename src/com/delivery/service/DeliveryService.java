@@ -9,7 +9,7 @@ import com.delivery.constants.Constants;
 import com.delivery.request.MealRequest;
 
 public class DeliveryService {
-	public List<Float> getEstimatedTimeForOrders(MealRequest[] features){
+	public List<Float> getEstimatedTimeForOrders(List<MealRequest> mealRequestList){
 		boolean flag = false;
 		List<String> restaurantCookingSlots = new LinkedList<String>();
         List<Integer> slotsOccupiedForOrdersList = new LinkedList<Integer>();
@@ -17,15 +17,15 @@ public class DeliveryService {
         List<Float> estimatedTimeOfDeliveryForOrders = new LinkedList<Float>(); 
         int count = 0;
         Float tempEstimatedTimeOfDelivery = 0.0f;
-        for(int i = 0; i<features.length; i++) {
+        for(int i = 0; i<mealRequestList.size(); i++) {
         	Float estimatedTimeOfDelivery = 0.0f;
         	int totalNumberOfAppetizers = 0;
         	int totalNumberOfMainCourse = 0;
-        	for(int j = 0; j<features[i].getMeals().size(); j++) {
-        		if(features[i].getMeals().get(j).equals(Constants.APPETIZER)) {
+        	for(int j = 0; j<mealRequestList.get(i).getMeals().size(); j++) {
+        		if(mealRequestList.get(i).getMeals().get(j).equals(Constants.APPETIZER)) {
         			totalNumberOfAppetizers++;
         		}
-        		else if(features[i].getMeals().get(j).equals(Constants.MAIN_COURSE)) {
+        		else if(mealRequestList.get(i).getMeals().get(j).equals(Constants.MAIN_COURSE)) {
         			totalNumberOfMainCourse++;
         		}
         	}
@@ -51,11 +51,11 @@ public class DeliveryService {
         				slotsOccupiedForOrdersList.add(totalSlotsNeededPerOrder);
         				if(totalSlotsNeededForMainCourse==0) {
             				estimatedTimeOfDelivery = (Float) ((Constants.APPETIZER_COOKING_TIME)
-                    				+features[i].getDistance()*Constants.PER_KM_DELIVERY_TIME);            					
+                    				+mealRequestList.get(i).getDistance()*Constants.PER_KM_DELIVERY_TIME);            					
         				}
         				else {
             				estimatedTimeOfDelivery = (Float) ((Constants.MAIN_COURSE_COOKING_TIME)
-                    				+features[i].getDistance()*Constants.PER_KM_DELIVERY_TIME);
+                    				+mealRequestList.get(i).getDistance()*Constants.PER_KM_DELIVERY_TIME);
         					
         				}
             			if(estimatedTimeOfDelivery<=150) {
@@ -96,14 +96,14 @@ public class DeliveryService {
         			if(totalSlotsNeededForMainCourse==0) {
         				if(count>0) {minTimeTaken = 0f;}
         				estimatedTimeOfDelivery = (Float) tempEstimatedTimeOfDelivery + minTimeTaken + ((Constants.APPETIZER_COOKING_TIME)
-                				+features[i].getDistance()*Constants.PER_KM_DELIVERY_TIME); 
+                				+mealRequestList.get(i).getDistance()*Constants.PER_KM_DELIVERY_TIME); 
         				tempEstimatedTimeOfDelivery+=estimatedTimeOfDelivery;
         				count++;
         			}
         			else {
         				if(count>0) {minTimeTaken = 0f;}
         				estimatedTimeOfDelivery = (Float) tempEstimatedTimeOfDelivery +  minTimeTaken + ((Constants.MAIN_COURSE_COOKING_TIME)
-                				+features[i].getDistance()*Constants.PER_KM_DELIVERY_TIME); 
+                				+mealRequestList.get(i).getDistance()*Constants.PER_KM_DELIVERY_TIME); 
         				tempEstimatedTimeOfDelivery+=estimatedTimeOfDelivery;
         				count++;
         			}
